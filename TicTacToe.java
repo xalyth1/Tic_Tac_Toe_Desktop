@@ -1,7 +1,6 @@
 package tictactoe;
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,10 +34,11 @@ public class TicTacToe extends JFrame {
         setVisible(true);
 
     }
+
     private void createAndInitializeGUI() {
         JPanel northPanel = new JPanel();
 
-        northPanel.setLayout(new GridLayout(1,3 ));
+        northPanel.setLayout(new GridLayout(1, 3));
 
         player1Button = new JButton("Human");
         player1Button.setName("ButtonPlayer1");
@@ -54,24 +54,23 @@ public class TicTacToe extends JFrame {
 
         });
 
-
         //startResetButton = new JButton("Start");
         startResetButton.setName("ButtonStartReset");
 
         startResetButton.addActionListener(e -> {
 
             if (player1Type == PlayerType.COMPUTER) {
+                updateGameState();
                 makeRandXMove();
                 currentPlayer = "O";
-                updateGameState();
-            }
 
+            }
 
             if (startResetButton.getText().equals("Reset")) {
 
-                for (int i = 0; i < buttonGrid.length; i++) {
+                for (JButton[] jButtons : buttonGrid) {
                     for (int j = 0; j < buttonGrid[0].length; j++) {
-                        buttonGrid[i][j].setText(" ");
+                        jButtons[j].setText(" ");
                     }
                 }
                 currentPlayer = "X";
@@ -86,8 +85,6 @@ public class TicTacToe extends JFrame {
                 statusBar.setText(gameStatus.description);
 
 
-
-
                 enableAllButtons();
             } else if (startResetButton.getText().equals("Start")) {
 
@@ -98,14 +95,11 @@ public class TicTacToe extends JFrame {
                 statusBar.setText(gameStatus.description);
 
 
-
-
                 enableAllButtons();
                 player1Button.setEnabled(false);
                 player2Button.setEnabled(false);
             }
             //updateGameState();
-
 
         });
         player2Button = new JButton("Human");
@@ -120,16 +114,76 @@ public class TicTacToe extends JFrame {
             }
         });
 
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu gameMenu = new JMenu("Game");
+        menuBar.add(gameMenu);
+
+        JMenuItem hvhMenuItem = new JMenuItem("Human vs Human");
+        JMenuItem hvrMenuItem = new JMenuItem("Human vs Robot");
+        JMenuItem rvhMenuItem = new JMenuItem("Robot vs Human");
+        JMenuItem rvrMenuItem = new JMenuItem("Robot vs Robot");
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+
+        gameMenu.add(hvhMenuItem);
+        gameMenu.add(hvrMenuItem);
+        gameMenu.add(rvhMenuItem);
+        gameMenu.add(rvrMenuItem);
+
+        gameMenu.addSeparator();
+        gameMenu.add(exitMenuItem);
+
+        setJMenuBar(menuBar);
+
+        gameMenu.setName("MenuGame");
+        hvhMenuItem.setName("MenuHumanHuman");
+        hvrMenuItem.setName("MenuHumanRobot");
+        rvhMenuItem.setName("MenuRobotHuman");
+        rvrMenuItem.setName("MenuRobotRobot");
+        exitMenuItem.setName("MenuExit");
+
+        hvhMenuItem.addActionListener(al -> {
+            player1Type = PlayerType.HUMAN;
+            player1Button.setText("Human");
+
+            player2Type = PlayerType.HUMAN;
+            player2Button.setText("Human");
+        });
+
+        hvrMenuItem.addActionListener(al -> {
+            player1Type = PlayerType.HUMAN;
+            player1Button.setText("Human");
+
+            player2Type = PlayerType.COMPUTER;
+            player2Button.setText("Robot");
+        });
+
+        rvhMenuItem.addActionListener(al -> {
+            player1Type = PlayerType.COMPUTER;
+            player1Button.setText("Robot");
+
+            player2Type = PlayerType.HUMAN;
+            player2Button.setText("Human");
+        });
+
+        rvrMenuItem.addActionListener(al -> {
+            player1Type = PlayerType.COMPUTER;
+            player1Button.setText("Robot");
+
+            player2Type = PlayerType.COMPUTER;
+            player2Button.setText("Robot");
+        });
+
+
+
+
 
         northPanel.add(player1Button);
         northPanel.add(startResetButton);
         northPanel.add(player2Button);
 
-
-
         JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(3,3 ));
-
+        boardPanel.setLayout(new GridLayout(3, 3));
 
         for (int i = 3; i > 0; i--) {
             for (char j = 'A'; j < 'D'; j++) {
@@ -151,7 +205,6 @@ public class TicTacToe extends JFrame {
                         if (gameStatus == GameStatus.GAME_IN_PROGRESS && player2Type == PlayerType.COMPUTER && currentPlayer.equals("O")) {
 
 
-
                         }
 
                     } else if (text.equals("X") || text.equals("O")) {
@@ -167,11 +220,8 @@ public class TicTacToe extends JFrame {
                     }
                 });
 
-                button.addActionListener( e -> {
-
+                button.addActionListener(e -> {
                 });
-
-
 
                 System.out.println(button.getName());
                 boardPanel.add(button);
@@ -190,7 +240,6 @@ public class TicTacToe extends JFrame {
         downPanel.add(statusBar);
 
 
-
         setLayout(new BorderLayout());
 
         add(northPanel, BorderLayout.NORTH);
@@ -204,6 +253,7 @@ public class TicTacToe extends JFrame {
 
 
     int counter = 1;
+
     private void updateGameState() {
         System.out.println("Update game state called" + counter++);
         // if all buttons not clicked -> game not started
@@ -214,16 +264,13 @@ public class TicTacToe extends JFrame {
             player2Button.setEnabled(true);
 
 
-
-        }
-        else if (wins("X")) {
+        } else if (wins("X")) {
             gameStatus = GameStatus.X_WINS;
             disableAllButtons();
             //player1Button.setEnabled(true);
             //player2Button.setEnabled(true);
             //startResetButton.setText("Start");
-        }
-        else if (wins("O")) {
+        } else if (wins("O")) {
             gameStatus = GameStatus.O_WINS;
             disableAllButtons();
             //player1Button.setEnabled(true);
@@ -235,7 +282,7 @@ public class TicTacToe extends JFrame {
             gameStatus = GameStatus.DRAW;
             disableAllButtons();
             //player1Button.setEnabled(true);
-           // player2Button.setEnabled(true);
+            // player2Button.setEnabled(true);
             //|startResetButton.setText("Start");
         } else {
             gameStatus = GameStatus.GAME_IN_PROGRESS;
@@ -245,47 +292,41 @@ public class TicTacToe extends JFrame {
             player2Button.setEnabled(false);
 
 
-
-
-
             if (player1Type == PlayerType.COMPUTER && currentPlayer.equals("X")) {
                 int delay = 700;
-                Timer timer = new Timer( delay, new ActionListener(){
+                Timer timer = new Timer(delay, new ActionListener() {
                     @Override
-                    public void actionPerformed( ActionEvent e ){
+                    public void actionPerformed(ActionEvent e) {
                         findFreeButton().get().setText("X");
 
                         currentPlayer = "O";
                         updateGameState();
                     }
-                } );
-                timer.setRepeats( false );
+                });
+                timer.setRepeats(false);
                 timer.start();
             }
 
             if (player2Type == PlayerType.COMPUTER && currentPlayer.equals("O")) {
                 int delay = 700;
-                Timer timer = new Timer( delay, new ActionListener(){
+                Timer timer = new Timer(delay, new ActionListener() {
                     @Override
-                    public void actionPerformed( ActionEvent e ){
+                    public void actionPerformed(ActionEvent e) {
                         findFreeButton().get().setText("O");
 
                         currentPlayer = "X";
                         updateGameState();
                     }
-                } );
-                timer.setRepeats( false );
+                });
+                timer.setRepeats(false);
                 timer.start();
             }
             //updateGameState();
 
 
-
-
         }
 
         statusBar.setText(gameStatus.description);
-
 
 
     }
@@ -312,15 +353,15 @@ public class TicTacToe extends JFrame {
         // horizontal
         for (int i = 0; i < buttonGrid.length; i++) {
             if (buttonGrid[i][0].getText().equals(s) &&
-                buttonGrid[i][1].getText().equals(s) &&
-                buttonGrid[i][2].getText().equals(s))
+                    buttonGrid[i][1].getText().equals(s) &&
+                    buttonGrid[i][2].getText().equals(s))
                 return true;
         }
         // vertical
         for (int j = 0; j < buttonGrid[0].length; j++) {
             if (buttonGrid[0][j].getText().equals(s) &&
-                buttonGrid[1][j].getText().equals(s) &&
-                buttonGrid[2][j].getText().equals(s))
+                    buttonGrid[1][j].getText().equals(s) &&
+                    buttonGrid[2][j].getText().equals(s))
                 return true;
         }
 
@@ -342,13 +383,16 @@ public class TicTacToe extends JFrame {
 
 
     private void makeRandXMove() {
-        findFreeButton().get().setText("X");
+        Optional<JButton> freeButton = findFreeButton();
+        freeButton.ifPresent(jButton -> jButton.setText("X"));
+
+        //findFreeButton().orElseGet()
     }
 
     private boolean isGameStarted() {
-        for (int i = 0; i < buttonGrid.length; i++) {
+        for (JButton[] jButtons : buttonGrid) {
             for (int j = 0; j < buttonGrid[0].length; j++) {
-                if (!buttonGrid[i][j].getText().equals(" "))
+                if (!jButtons[j].getText().equals(" "))
                     return true;
             }
         }
@@ -358,18 +402,19 @@ public class TicTacToe extends JFrame {
     private void enableAllButtons() {
         setAllButtonsEnabled(true);
     }
+
     private void disableAllButtons() {
         setAllButtonsEnabled(false);
     }
+
     private void setAllButtonsEnabled(boolean value) {
         Arrays.stream(buttonGrid)
-                .flatMap(button -> Arrays.stream(button))
+                .flatMap(Arrays::stream)
                 .forEach(jButton -> jButton.setEnabled(value));
 
         player1Button.setEnabled(value);
         player2Button.setEnabled(value);
     }
-
 
 
 }
