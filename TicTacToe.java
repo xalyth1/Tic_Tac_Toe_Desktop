@@ -8,176 +8,35 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class TicTacToe extends JFrame {
-
+    Game game = new Game(this);
     JButton[][] buttonGrid = new JButton[3][3];
-    GameStatus gameStatus = GameStatus.GAME_IS_NOT_STARTED;
     JLabel statusBar;
-    String currentPlayer = "X";
-
-
-    PlayerType player1Type = PlayerType.HUMAN;
-    PlayerType player2Type = PlayerType.HUMAN;
 
     JButton player1Button;
     JButton player2Button;
 
-    JButton startResetButton = new JButton("Start");
+    JButton startResetButton;
 
 
     public TicTacToe() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Tic Tac Toe");
         setSize(450, 450);
-
         createAndInitializeGUI();
-
         setVisible(true);
-
     }
 
     private void createAndInitializeGUI() {
-        JPanel northPanel = new JPanel();
+        GUI gui = GUI.getInstance();
+        player1Button = gui.createPlayer1Button();
+        startResetButton = gui.createStartResetButton();
+        player2Button = gui.createPlayer2Button();
 
-        northPanel.setLayout(new GridLayout(1, 3));
-
-        player1Button = new JButton("Human");
-        player1Button.setName("ButtonPlayer1");
-        player1Button.addActionListener(e -> {
-
-            if (player1Type == PlayerType.HUMAN) {
-                player1Type = PlayerType.COMPUTER;
-                player1Button.setText("Robot");
-            } else if (player1Type == PlayerType.COMPUTER) {
-                player1Type = PlayerType.HUMAN;
-                player1Button.setText("Human");
-            }
-
-        });
-
-        //startResetButton = new JButton("Start");
-        startResetButton.setName("ButtonStartReset");
-
-        startResetButton.addActionListener(e -> {
-
-            if (player1Type == PlayerType.COMPUTER) {
-                updateGameState();
-                makeRandXMove();
-                currentPlayer = "O";
-
-            }
-
-            if (startResetButton.getText().equals("Reset")) {
-
-                for (JButton[] jButtons : buttonGrid) {
-                    for (int j = 0; j < buttonGrid[0].length; j++) {
-                        jButtons[j].setText(" ");
-                    }
-                }
-                currentPlayer = "X";
-
-                player1Button.setEnabled(true);
-                player2Button.setEnabled(true);
-
-                startResetButton.setText("Start");
-
-                //updateGameState();
-                gameStatus = GameStatus.GAME_IS_NOT_STARTED;
-                statusBar.setText(gameStatus.description);
-
-
-                enableAllButtons();
-            } else if (startResetButton.getText().equals("Start")) {
-
-                startResetButton.setText("Reset");
-
-                //updateGameState();
-                gameStatus = GameStatus.GAME_IN_PROGRESS;
-                statusBar.setText(gameStatus.description);
-
-
-                enableAllButtons();
-                player1Button.setEnabled(false);
-                player2Button.setEnabled(false);
-            }
-            //updateGameState();
-
-        });
-        player2Button = new JButton("Human");
-        player2Button.setName("ButtonPlayer2");
-        player2Button.addActionListener(e -> {
-            if (player2Type == PlayerType.HUMAN) {
-                player2Type = PlayerType.COMPUTER;
-                player2Button.setText("Robot");
-            } else if (player2Type == PlayerType.COMPUTER) {
-                player2Type = PlayerType.HUMAN;
-                player2Button.setText("Human");
-            }
-        });
-
-        JMenuBar menuBar = new JMenuBar();
-
-        JMenu gameMenu = new JMenu("Game");
-        menuBar.add(gameMenu);
-
-        JMenuItem hvhMenuItem = new JMenuItem("Human vs Human");
-        JMenuItem hvrMenuItem = new JMenuItem("Human vs Robot");
-        JMenuItem rvhMenuItem = new JMenuItem("Robot vs Human");
-        JMenuItem rvrMenuItem = new JMenuItem("Robot vs Robot");
-        JMenuItem exitMenuItem = new JMenuItem("Exit");
-
-        gameMenu.add(hvhMenuItem);
-        gameMenu.add(hvrMenuItem);
-        gameMenu.add(rvhMenuItem);
-        gameMenu.add(rvrMenuItem);
-
-        gameMenu.addSeparator();
-        gameMenu.add(exitMenuItem);
-
+        JMenuBar menuBar = gui.createMenuBar(); // with listeners
         setJMenuBar(menuBar);
 
-        gameMenu.setName("MenuGame");
-        hvhMenuItem.setName("MenuHumanHuman");
-        hvrMenuItem.setName("MenuHumanRobot");
-        rvhMenuItem.setName("MenuRobotHuman");
-        rvrMenuItem.setName("MenuRobotRobot");
-        exitMenuItem.setName("MenuExit");
-
-        hvhMenuItem.addActionListener(al -> {
-            player1Type = PlayerType.HUMAN;
-            player1Button.setText("Human");
-
-            player2Type = PlayerType.HUMAN;
-            player2Button.setText("Human");
-        });
-
-        hvrMenuItem.addActionListener(al -> {
-            player1Type = PlayerType.HUMAN;
-            player1Button.setText("Human");
-
-            player2Type = PlayerType.COMPUTER;
-            player2Button.setText("Robot");
-        });
-
-        rvhMenuItem.addActionListener(al -> {
-            player1Type = PlayerType.COMPUTER;
-            player1Button.setText("Robot");
-
-            player2Type = PlayerType.HUMAN;
-            player2Button.setText("Human");
-        });
-
-        rvrMenuItem.addActionListener(al -> {
-            player1Type = PlayerType.COMPUTER;
-            player1Button.setText("Robot");
-
-            player2Type = PlayerType.COMPUTER;
-            player2Button.setText("Robot");
-        });
-
-
-
-
-
+        JPanel northPanel = new JPanel();
+        northPanel.setLayout(new GridLayout(1, 3));
         northPanel.add(player1Button);
         northPanel.add(startResetButton);
         northPanel.add(player2Button);
@@ -200,18 +59,9 @@ public class TicTacToe extends JFrame {
                     if (text.equals(" ") && (gameStatus == GameStatus.GAME_IN_PROGRESS || gameStatus == GameStatus.GAME_IS_NOT_STARTED)) {
                         button.setText(currentPlayer);
                         currentPlayer = currentPlayer == "X" ? "O" : "X";
-                        //updateGameState();
-
                         if (gameStatus == GameStatus.GAME_IN_PROGRESS && player2Type == PlayerType.COMPUTER && currentPlayer.equals("O")) {
-
-
                         }
-
-                    } else if (text.equals("X") || text.equals("O")) {
-
                     }
-                    //currentPlayer = currentPlayer == "X" ? "O" : "X";
-
                     updateGameState();
                     try {
                         Thread.sleep(100);
@@ -226,26 +76,19 @@ public class TicTacToe extends JFrame {
                 System.out.println(button.getName());
                 boardPanel.add(button);
             }
-
             //updateGameState();
         }
-
 
         JPanel downPanel = new JPanel();
         downPanel.setLayout(new FlowLayout());
         statusBar = new JLabel("Game is not started");
         statusBar.setName("LabelStatus");
-
-
         downPanel.add(statusBar);
-
 
         setLayout(new BorderLayout());
 
         add(northPanel, BorderLayout.NORTH);
-
         add(boardPanel, BorderLayout.CENTER);
-
         add(downPanel, BorderLayout.SOUTH);
 
         updateGameState();
