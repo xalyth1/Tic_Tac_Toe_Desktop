@@ -18,7 +18,6 @@ public class TicTacToe extends JFrame {
 
     JButton startResetButton;
 
-
     public TicTacToe() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Tic Tac Toe");

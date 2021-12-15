@@ -27,11 +27,11 @@ public class Game implements Runnable {
 
     public void startGame() {
         gameStatus = GameStatus.GAME_IN_PROGRESS;
-        ticTacToe.statusBar.setText(gameStatus.description);
+        ticTacToe.statusBar.setText("The turn of " + currentPlayer.getPlayerType().name + " Player(" + currentPlayer.getPlayerSymbol() + ")");
 
         while (gameStatus == GameStatus.GAME_IN_PROGRESS) {
             makeMove();
-            currentPlayer = currentPlayer.getAdversary();
+            //currentPlayer = currentPlayer.getAdversary();
         }
 
         ticTacToe.setAllButtonsEnabled(false);
@@ -64,21 +64,31 @@ public class Game implements Runnable {
 
         }
 
+        currentPlayer = currentPlayer.getAdversary();
 
+        String msg = null;
 
         if (ticTacToe.wins(player1.getPlayerSymbol())) {
             System.out.println("p1 wins");
             gameStatus = GameStatus.X_WINS;
+            msg = "The " + player1.getPlayerType().name + " Player (" + player1.getPlayerSymbol() + ") wins";
         } else if (ticTacToe.wins(player2.getPlayerSymbol())) {
             System.out.println("p2 wins");
             gameStatus = GameStatus.O_WINS;
+            msg = "The " + player2.getPlayerType().name + " Player (" + player2.getPlayerSymbol() + ") wins";
         } else if (!ticTacToe.hasFreeMove()) {
             System.out.println("draw");
             gameStatus = GameStatus.DRAW;
+            msg = gameStatus.description;
         } else {
             gameStatus = GameStatus.GAME_IN_PROGRESS;
+            msg = "The turn of " + currentPlayer.getPlayerType().name + " Player(" + currentPlayer.getPlayerSymbol() + ")";
         }
-        ticTacToe.statusBar.setText(gameStatus.description);
+
+
+        ticTacToe.statusBar.setText(msg);
+
+
 
         return gameStatus;
     }

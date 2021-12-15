@@ -7,6 +7,8 @@ public enum GameStatus {
     O_WINS ("O wins"),
     DRAW ("Draw");
 
+
+    Game game;
     String description;
     GameStatus(String description) {
         this.description = description;

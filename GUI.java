@@ -2,11 +2,20 @@ package tictactoe;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 
 public class GUI {
     Game game;// = new Game();
 
     private static final GUI gui = new GUI();
+    private JMenuItem hvhMenuItem;
+    private JMenuItem hvrMenuItem;
+    private JMenuItem rvhMenuItem;
+    private JMenuItem rvrMenuItem;
+    private JMenuItem exitMenuItem;
+
+    private final String startStr = "Start";
+    private final String resetStr = "Reset";
 
     public void setGame(Game game) {
         this.game = game;
@@ -46,11 +55,13 @@ public class GUI {
         JMenu gameMenu = new JMenu("Game");
         menuBar.add(gameMenu);
 
-        JMenuItem hvhMenuItem = new JMenuItem("Human vs Human");
-        JMenuItem hvrMenuItem = new JMenuItem("Human vs Robot");
-        JMenuItem rvhMenuItem = new JMenuItem("Robot vs Human");
-        JMenuItem rvrMenuItem = new JMenuItem("Robot vs Robot");
-        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        hvhMenuItem = new JMenuItem("Human vs Human");
+        hvrMenuItem = new JMenuItem("Human vs Robot");
+        rvhMenuItem = new JMenuItem("Robot vs Human");
+        rvrMenuItem = new JMenuItem("Robot vs Robot");
+        exitMenuItem = new JMenuItem("Exit");
+
+
 
         gameMenu.add(hvhMenuItem);
         gameMenu.add(hvrMenuItem);
@@ -96,11 +107,12 @@ public class GUI {
         for (int i = 3; i > 0; i--) {
             for (char j = 'A'; j < 'D'; j++) {
                 JButton button = new JButton(" "/*""+ j + i*/);
+                //JButton button = new JButton(""+ j + i);
                 button.setName("Button" + j + i);
                 button.setFocusPainted(false);
                 Font font = button.getFont();
                 button.setFont(new Font(font.getName(), font.getStyle(), font.getSize() + 16));
-                buttonGrid[i - 1][j - 65] = button;
+                buttonGrid[3 - i][j - 65] = button;
                 button.setEnabled(false);
 
                 System.out.println(button.getName());
@@ -121,11 +133,7 @@ public class GUI {
         });
 
         game.ticTacToe.startResetButton.addActionListener(e -> {
-            String startStr = "Start";
-            String resetStr = "Reset";
             JButton button = game.ticTacToe.startResetButton;
-
-
 
             if (button.getText().equals(resetStr)) {
                 game.reset();
@@ -142,49 +150,13 @@ public class GUI {
                 game.ticTacToe.player1Button.setEnabled(false);
                 game.ticTacToe.player2Button.setEnabled(false);
 
-
                 new Thread(game).start();
+
+
 
                 button.setText(resetStr);
             }
-
-
-
-//            if (startResetButton.getText().equals("Reset")) {
-//                for (JButton[] jButtons : buttonGrid) {
-//                    for (int j = 0; j < buttonGrid[0].length; j++) {
-//                        jButtons[j].setText(" ");
-//                    }
-//                }
-//                currentPlayer = "X";
-//
-//                player1Button.setEnabled(true);
-//                player2Button.setEnabled(true);
-//
-//                startResetButton.setText("Start");
-//
-//                //updateGameState();
-//                gameStatus = GameStatus.GAME_IS_NOT_STARTED;
-//                statusBar.setText(gameStatus.description);
-//
-//                enableAllButtons();
-//            } else if (startResetButton.getText().equals("Start")) {
-//
-//                startResetButton.setText("Reset");
-//
-//                //updateGameState();
-//                gameStatus = GameStatus.GAME_IN_PROGRESS;
-//                statusBar.setText(gameStatus.description);
-//
-//                enableAllButtons();
-//                player1Button.setEnabled(false);
-//                player2Button.setEnabled(false);
-//            }
-//            //updateGameState();
-
         });
-
-
 
         JButton[][] buttonGrid = game.ticTacToe.buttonGrid;
         for (JButton[] tab : buttonGrid) {
@@ -196,34 +168,84 @@ public class GUI {
                         game.worker.moveMade = true;
                         button.setText(game.currentPlayer.getPlayerSymbol());
                     }
-
-
-
-
-
-
-//                    String text = button.getText();
-//                    if (text.equals(" ") && (gameStatus == GameStatus.GAME_IN_PROGRESS || gameStatus == GameStatus.GAME_IS_NOT_STARTED)) {
-//                        button.setText(currentPlayer);
-//                        currentPlayer = currentPlayer == "X" ? "O" : "X";
-//                        if (gameStatus == GameStatus.GAME_IN_PROGRESS && player2Type == PlayerType.ROBOT && currentPlayer.equals("O")) {
-//                        }
-//                    }
-//                    updateGameState();
-//                    try {
-//                        Thread.sleep(100);
-//                    } catch (Exception exception) {
-//                        exception.printStackTrace();
-//                    }
                 }
                 );
             }
         }
 
+        createMenuListeners();
+    }
+
+    private void createMenuListeners() {
+        hvhMenuItem.addActionListener(al -> {
+            game.player1.setPlayerType(PlayerType.HUMAN);
+            game.player2.setPlayerType(PlayerType.HUMAN);
+            game.ticTacToe.player1Button.setText("Human");
+            game.ticTacToe.player2Button.setText("Human");
+
+            prepareBoard();
+
+            new Thread(game).start();
+
+            JButton button = game.ticTacToe.startResetButton;
+            button.setText(resetStr);
+
+        });
+
+        hvrMenuItem.addActionListener(al -> {
+            game.player1.setPlayerType(PlayerType.HUMAN);
+            game.player2.setPlayerType(PlayerType.ROBOT);
+            game.ticTacToe.player1Button.setText("Human");
+            game.ticTacToe.player2Button.setText("Robot");
+
+            prepareBoard();
+
+            new Thread(game).start();
+
+            JButton button = game.ticTacToe.startResetButton;
+            button.setText(resetStr);
+        });
+
+        rvhMenuItem.addActionListener(al -> {
+            game.player1.setPlayerType(PlayerType.ROBOT);
+            game.player2.setPlayerType(PlayerType.HUMAN);
+            game.ticTacToe.player1Button.setText("Robot");
+            game.ticTacToe.player2Button.setText("Human");
+
+            prepareBoard();
+
+            new Thread(game).start();
+
+            JButton button = game.ticTacToe.startResetButton;
+            button.setText(resetStr);
+        });
+
+        rvrMenuItem.addActionListener(al -> {
+            game.player1.setPlayerType(PlayerType.ROBOT);
+            game.player2.setPlayerType(PlayerType.ROBOT);
+            game.ticTacToe.player1Button.setText("Robot");
+            game.ticTacToe.player2Button.setText("Robot");
+
+            prepareBoard();
+
+            new Thread(game).start();
+
+            JButton button = game.ticTacToe.startResetButton;
+            button.setText(resetStr);
+        });
+
+        exitMenuItem.addActionListener(al -> {
+            game.ticTacToe.dispatchEvent(new WindowEvent(game.ticTacToe, WindowEvent.WINDOW_CLOSING));
+        });
 
 
+    }
 
-
+    private void prepareBoard() {
+        game.ticTacToe.clearAllBoardButtons();
+        game.ticTacToe.setAllButtonsEnabled(true);
+        game.ticTacToe.player1Button.setEnabled(false);
+        game.ticTacToe.player2Button.setEnabled(false);
     }
 
 
