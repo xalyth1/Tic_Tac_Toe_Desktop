@@ -27,7 +27,7 @@ public class Game implements Runnable {
 
     public void startGame() {
         gameStatus = GameStatus.GAME_IN_PROGRESS;
-        ticTacToe.statusBar.setText("The turn of " + currentPlayer.getPlayerType().name + " Player(" + currentPlayer.getPlayerSymbol() + ")");
+        ticTacToe.statusBar.setText("The turn of " + currentPlayer.getPlayerType().name + " Player (" + currentPlayer.getPlayerSymbol() + ")");
 
         while (gameStatus == GameStatus.GAME_IN_PROGRESS) {
             makeMove();
@@ -45,12 +45,16 @@ public class Game implements Runnable {
     }
 
     public GameStatus makeMove() {
+        //sleep(3000);
+
         if (currentPlayer.getPlayerType().equals(PlayerType.ROBOT)) {
-            sleep(300);
+            //sleep(300);
             ticTacToe.findFreeButton().get().setText(currentPlayer.getPlayerSymbol());
+            //sleep(3000);
         } else {
             worker = new HumanPlayerWorker();
             worker.start();
+            //sleep(3000);
             try {
                 worker.join();
             } catch (InterruptedException e) {
@@ -61,6 +65,7 @@ public class Game implements Runnable {
 
 
 
+            //sleep(2000);
 
         }
 
@@ -82,7 +87,7 @@ public class Game implements Runnable {
             msg = gameStatus.description;
         } else {
             gameStatus = GameStatus.GAME_IN_PROGRESS;
-            msg = "The turn of " + currentPlayer.getPlayerType().name + " Player(" + currentPlayer.getPlayerSymbol() + ")";
+            msg = "The turn of " + currentPlayer.getPlayerType().name + " Player (" + currentPlayer.getPlayerSymbol() + ")";
         }
 
 

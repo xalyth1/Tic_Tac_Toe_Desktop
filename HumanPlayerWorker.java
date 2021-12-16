@@ -12,11 +12,13 @@ public class HumanPlayerWorker extends Thread {
     }
 
     public void run() {
+
         System.out.println("Human Worker #" + instanceId + "started");
 
         try {
+            //Thread.sleep(3000);
             while (moveMade == false) {
-                Thread.sleep(200);
+                Thread.sleep(15);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

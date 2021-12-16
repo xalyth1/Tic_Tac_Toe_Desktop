@@ -141,6 +141,10 @@ public class GUI {
                 game.ticTacToe.player1Button.setEnabled(true);
                 game.ticTacToe.player2Button.setEnabled(true);
 
+                game.gameStatus = GameStatus.GAME_IS_NOT_STARTED;
+                game.ticTacToe.statusBar.setText(game.gameStatus.description);
+                game.currentPlayer = game.player1;
+
                 button.setText(startStr);
             } else if (button.getText().equals(startStr)) {
                 game.ticTacToe.clearAllBoardButtons();
